@@ -1,8 +1,25 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {Button, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
 import SafeScreen from '../../components/SafeScreen';
+import {SocialLogin} from './helper';
 
 const Login = () => {
+  const [googleLoading, setGoogleLoading] = useState(false);
+
+  const singInWithGoogleSuccess = async ({
+    result,
+    googleCredential,
+    idToken,
+  }) => {
+    setGoogleLoading(false);
+    const {phoneNumber, email, displayName} = result.user;
+  };
+  const onGoogleLoginPress = () => {
+    setGoogleLoading(true);
+    SocialLogin.googleLogin(singInWithGoogleSuccess, () => {
+      setGoogleLoading(false);
+    });
+  };
   return (
     <SafeScreen>
       <View style={styles.container}>
@@ -13,6 +30,7 @@ const Login = () => {
           Discover EV charging stations near you, plan your trip, and unlock
           more features with just one click!
         </Text>
+        <Button title="Google Sigin" onPress={onGoogleLoginPress} />
       </View>
     </SafeScreen>
   );

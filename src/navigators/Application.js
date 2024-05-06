@@ -8,7 +8,7 @@ import {StatusBar} from 'react-native';
 import Login from '../screens/Login/Login';
 
 const Stack = createStackNavigator();
-const accessToken = true;
+const accessToken = false;
 function ApplicationNavigator() {
   return (
     <NavigationContainer ref={navigationRef}>
