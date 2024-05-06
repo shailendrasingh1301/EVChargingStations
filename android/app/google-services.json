@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "693243145991",
+    "project_id": "evchargingstations-6924b",
+    "storage_bucket": "evchargingstations-6924b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:693243145991:android:6b8795d7ab31c538641fa2",
+        "android_client_info": {
+          "package_name": "com.evchargingstations"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "693243145991-cr5e5l7kdrug1mjs79ojknve019dcri7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.evchargingstations",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "693243145991-gnmne5213mcsenu05kk7pkir34trbcue.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjhV1_EpdKEzDKoqE2Cg910uOTno8TBuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "693243145991-gnmne5213mcsenu05kk7pkir34trbcue.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "693243145991-tsubkpb5nmvg2vpqh9vq0narfm3ttgd9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.EvChargingStations"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
