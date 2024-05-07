@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 import SafeScreen from '../../components/SafeScreen';
 import {SocialLogin} from './helper';
 import {useDispatch} from 'react-redux';
+import {setAccessToken} from '../../store/slices/userSlice';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ const Login = () => {
     googleCredential,
     idToken,
   }) => {
+    dispatch(setAccessToken(accessToken));
     setGoogleLoading(false);
     const {phoneNumber, email, displayName} = result.user;
   };

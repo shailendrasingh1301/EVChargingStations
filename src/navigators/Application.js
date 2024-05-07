@@ -6,10 +6,11 @@ import HomeTabsNavigator from './Tabs';
 import {navigationRef} from './helper';
 import {StatusBar} from 'react-native';
 import Login from '../screens/Login/Login';
+import {useSelector} from 'react-redux';
 
 const Stack = createStackNavigator();
-const accessToken = true;
 function ApplicationNavigator() {
+  const {accessToken} = useSelector(state => state.userReducer);
   return (
     <NavigationContainer ref={navigationRef}>
       <StatusBar backgroundColor={'#FFFFFF'} />
@@ -17,9 +18,7 @@ function ApplicationNavigator() {
         screenOptions={{headerShown: false}}
         initialRouteName={ROUTES.LOGIN}>
         <Stack.Group>
-          <Stack.Screen name={ROUTES.TABS} component={HomeTabsNavigator} />
-          <Stack.Screen name={ROUTES.LOGIN} component={Login} />
-          {/* {accessToken ? (
+          {accessToken ? (
             <>
               <Stack.Screen name={ROUTES.TABS} component={HomeTabsNavigator} />
             </>
@@ -27,7 +26,7 @@ function ApplicationNavigator() {
             <>
               <Stack.Screen name={ROUTES.LOGIN} component={Login} />
             </>
-          )} */}
+          )}
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

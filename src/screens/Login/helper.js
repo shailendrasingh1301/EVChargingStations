@@ -6,7 +6,6 @@ import {
 import axios from 'axios';
 import {navigationRef} from '../../navigators/helper';
 import {ROUTES} from '../../utils/routes';
-import {setAccessToken} from '../../store/slices/userSlice';
 
 /**
  * Configure Google Login.
