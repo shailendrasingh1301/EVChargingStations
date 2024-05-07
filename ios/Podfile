@@ -24,6 +24,8 @@ flipper_config =  FlipperConfiguration.disabled
   pod 'GoogleUtilities', :modular_headers => true
   pod 'FirebaseCore', :modular_headers => true
 
+  pod 'Google-Maps-iOS-SDK', '~> 1.9.2'
+
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green

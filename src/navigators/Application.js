@@ -8,14 +8,18 @@ import {StatusBar} from 'react-native';
 import Login from '../screens/Login/Login';
 
 const Stack = createStackNavigator();
-const accessToken = false;
+const accessToken = true;
 function ApplicationNavigator() {
   return (
     <NavigationContainer ref={navigationRef}>
       <StatusBar backgroundColor={'#FFFFFF'} />
-      <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Navigator
+        screenOptions={{headerShown: false}}
+        initialRouteName={ROUTES.LOGIN}>
         <Stack.Group>
-          {accessToken ? (
+          <Stack.Screen name={ROUTES.TABS} component={HomeTabsNavigator} />
+          <Stack.Screen name={ROUTES.LOGIN} component={Login} />
+          {/* {accessToken ? (
             <>
               <Stack.Screen name={ROUTES.TABS} component={HomeTabsNavigator} />
             </>
@@ -23,7 +27,7 @@ function ApplicationNavigator() {
             <>
               <Stack.Screen name={ROUTES.LOGIN} component={Login} />
             </>
-          )}
+          )} */}
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

@@ -3,7 +3,10 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import ky from 'ky';
+import axios from 'axios';
+import {navigationRef} from '../../navigators/helper';
+import {ROUTES} from '../../utils/routes';
+import {setAccessToken} from '../../store/slices/userSlice';
 
 /**
  * Configure Google Login.
@@ -39,23 +42,19 @@ export const SocialLogin = {
 
       console.log('idToken', idToken, googleCredential, result, accessToken);
 
-      const response = await ky
-        .get(
-          `https://people.googleapis.com/v1/people/me?personFields=phoneNumbers,birthdays,genders`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              Accept: 'application/json',
-            },
+      const response = await axios.get(
+        `https://people.googleapis.com/v1/people/me?personFields=phoneNumbers,birthdays,genders`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: 'application/json',
           },
-        )
-        .json();
-      if (response) {
+        },
+      );
+      if (response.data) {
+        navigationRef.navigate(ROUTES.TABS);
       }
-      success({result, googleCredential, idToken});
-      // } else {
-      //   throw new Error("Something went wrong");
-      // }
+      success({accessToken, result, googleCredential, idToken});
     } catch (error) {
       switch (error.code) {
         case statusCodes.SIGN_IN_CANCELLED:

@@ -1,0 +1,50 @@
+import {StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import MapView from 'react-native-maps';
+import GetLocation from 'react-native-get-location';
+
+const AppMapView = () => {
+  const [location, setLocation] = useState();
+
+  useEffect(() => {
+    GetLocation.getCurrentPosition({
+      enableHighAccuracy: true,
+      timeout: 60000,
+    })
+      .then(location => {
+        setLocation(location);
+        console.log(location);
+      })
+      .catch(error => {
+        const {code, message} = error;
+        console.warn(code, message);
+      });
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      <MapView
+        style={styles.mapView}
+        initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+      />
+    </View>
+  );
+};
+
+export default AppMapView;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  mapView: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+});

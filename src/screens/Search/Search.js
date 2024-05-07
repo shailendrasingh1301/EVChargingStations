@@ -1,15 +1,12 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import SafeScreen from '../../components/SafeScreen';
-import MapView from 'react-native-maps';
+import AppMapView from './AppMapView';
 
 const Search = () => {
   return (
-    <SafeScreen>
-      <View style={styles.container}>
-        <Text>Search</Text>
-        <MapView style={styles.mapView} />
-      </View>
+    <SafeScreen style={styles.container}>
+      <AppMapView />
     </SafeScreen>
   );
 };
@@ -19,10 +16,5 @@ export default Search;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  mapView: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
   },
 });
