@@ -4,4 +4,5 @@ export const Images = {
   SearchIcon: require('./SearchInactiveIcon.png'),
   profileInactiveIcon: require('./ProfileInactive.png'),
   profileActiveIcon: require('./ProfileActiveIcon.png'),
+  MessageBoxIcon: require('./messageBox.png'),
 };

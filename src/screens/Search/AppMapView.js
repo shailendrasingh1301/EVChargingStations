@@ -13,11 +13,9 @@ const AppMapView = () => {
     })
       .then(location => {
         setLocation(location);
-        console.log(location);
       })
       .catch(error => {
         const {code, message} = error;
-        console.warn(code, message);
       });
   }, []);
 

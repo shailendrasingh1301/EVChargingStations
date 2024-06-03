@@ -39,8 +39,6 @@ export const SocialLogin = {
       const result = await auth().signInWithCredential(googleCredential);
       const {accessToken} = await GoogleSignin.getTokens();
 
-      console.log('idToken', idToken, googleCredential, result, accessToken);
-
       const response = await axios.get(
         `https://people.googleapis.com/v1/people/me?personFields=phoneNumbers,birthdays,genders`,
         {

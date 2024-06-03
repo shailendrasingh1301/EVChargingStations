@@ -19,6 +19,7 @@ import Search from '../screens/Search/Search';
 import Favourite from '../screens/Favourite/Favourite';
 import Profile from '../screens/Profile/Profile';
 import {COLORS} from '../utils/colors';
+import Chat from '../screens/Chat/Chat';
 
 const {width, height} = Dimensions.get('window'),
   TAB_BAR_WIDTH = width / 5;
@@ -52,6 +53,9 @@ const getTabIcon = ({tabName, isFocused}) => {
     case ROUTES.FAVOURITES: {
       return Images.FilledHeartIcon;
     }
+    case ROUTES.CHAT: {
+      return Images.MessageBoxIcon;
+    }
     case ROUTES.PROFILE: {
       return Images.profileActiveIcon;
     }
@@ -60,7 +64,6 @@ const getTabIcon = ({tabName, isFocused}) => {
   }
 };
 const TabBar = ({state, descriptors, navigation}) => {
-  console.log('state, descriptors, navigation', state, descriptors, navigation);
   return (
     <View
       style={{
@@ -157,6 +160,13 @@ const HomeTabsNavigator = () => {
           component={Favourite}
           options={{
             tabBarLabel: 'Favourite',
+          }}
+        />
+        <Tab.Screen
+          name={ROUTES.CHAT}
+          component={Chat}
+          options={{
+            tabBarLabel: 'Chat',
           }}
         />
         <Tab.Screen
