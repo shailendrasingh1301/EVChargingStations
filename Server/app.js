@@ -26,9 +26,11 @@ io.on('connection', socket => {
   //   socket.emit('welcome', `Welcome to the server, ${socket.id}`); //this message will goes to the connected user only
   //   socket.broadcast.emit('welcome', `${socket.id} joined the server`); //this message will goes to other connected user only not itself user
 
-  socket.on('message', data => {
-    console.log(data);
-    socket.broadcast.emit('receive-message', data);
+  socket.on('message', ({message, room}) => {
+    console.log(message, room);
+    // io.emit('receive-message', data); //to all users
+    // socket.broadcast.emit('receive-message', data); //to other user not itself
+    io.to(room).emit('receive-message', {message, room}); //to particular room
   });
 
   socket.on('disconnect', () => {
