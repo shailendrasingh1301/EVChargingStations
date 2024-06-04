@@ -7,7 +7,7 @@ import {
   Button,
   FlatList,
   Alert,
-  Image,
+  TouchableOpacity,
 } from 'react-native';
 import SafeScreen from '../../components/SafeScreen';
 import {io} from 'socket.io-client';
@@ -17,72 +17,108 @@ import {COLORS} from '../../utils/colors';
 const Chat = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [room, setRoom] = useState('');
+  const [users, setUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userRoomID, setUserRoomId] = useState('');
 
   const baseUrl =
     Platform.OS === 'android'
-      ? 'http://192.168.1.100:3000/'
+      ? 'http://192.168.1.7:3000/'
       : 'http://localhost:3000';
 
-  const socket = useMemo(() => io.connect(baseUrl), []);
+  const socket = useMemo(() => io.connect(baseUrl), [baseUrl]);
 
   useEffect(() => {
     socket.on('connect', () => {
       console.log('connected', socket.id);
+      setUserRoomId(socket.id);
     });
 
-    socket.on('receive-message', ({message, roomID}) => {
+    socket.on('receive-message', ({message, from}) => {
       console.log('msg', message);
-      Alert.alert(message);
-      setMessages(prevMessages => [
-        ...prevMessages,
-        {text: message, id: roomID},
-      ]);
+      setMessages(prevMessages => [...prevMessages, {text: message, id: from}]);
     });
 
-    socket.on('welcome', s => {
-      console.log(s);
+    socket.on('users-list', users => {
+      setUsers(users.filter(user => user !== socket.id));
     });
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [socket]);
 
   const handleSend = () => {
     if (message.trim()) {
-      socket.emit('message', {message, room});
+      socket.emit('message', {message, to: selectedUser});
       setMessages(prevMessages => [
         ...prevMessages,
         {text: message, id: socket.id},
       ]);
       setMessage('');
-      setRoom('');
     }
   };
 
   return (
     <SafeScreen>
+      <View
+        style={{
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: COLORS.lightGreen,
+        }}>
+        <Text
+          style={{
+            paddingVertical: 20,
+            paddingHorizontal: 8,
+            textAlign: 'center',
+            color: COLORS.black,
+            fontSize: 16,
+          }}>
+          {userRoomID}
+        </Text>
+      </View>
       <View style={styles.container}>
+        <View style={styles.usersContainer}>
+          <FlatList
+            data={users}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={styles.userItem}
+                onPress={() => setSelectedUser(item)}>
+                <Text
+                  style={{
+                    color:
+                      selectedUser === item ? COLORS.lightGreen : COLORS.black,
+                  }}>
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item}
+          />
+        </View>
         <FlatList
           data={messages}
           renderItem={({item}) => (
-            <>
-              <Image />
+            <View
+              style={{
+                flexDirection: item.id === socket.id ? 'row' : 'row-reverse',
+                marginBottom: 10,
+              }}>
               <View
                 style={{
-                  flexDirection: item.id === socket.id ? 'row' : 'row-reverse',
+                  ...styles.messageContainer,
+                  backgroundColor:
+                    item.id === socket.id
+                      ? COLORS.whiteShade
+                      : COLORS.lightGreen,
+                  borderTopRightRadius: item.id !== socket.id ? 0 : 15,
+                  borderTopLeftRadius: item.id === socket.id ? 0 : 15,
                 }}>
-                <Text
-                  style={{
-                    ...styles.messageContainer,
-                    backgroundColor:
-                      item.id === socket.id ? '#f1f1f1' : COLORS.green,
-                  }}>
-                  {item.text}
-                </Text>
+                <Text style={styles.messageText}>{item.text}</Text>
               </View>
-            </>
+            </View>
           )}
           keyExtractor={(item, index) => index.toString()}
         />
@@ -94,14 +130,6 @@ const Chat = () => {
             placeholder="Type a message..."
           />
           <Button title="Send" onPress={handleSend} />
-        </View>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.textInput}
-            value={room}
-            onChangeText={e => setRoom(e)}
-            placeholder="Type Room ID"
-          />
         </View>
       </View>
     </SafeScreen>
@@ -115,10 +143,22 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
   },
+  usersContainer: {
+    marginBottom: 20,
+  },
+  userItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+  },
   messageContainer: {
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 15,
     marginBottom: 10,
+    maxWidth: '80%',
+  },
+  messageText: {
+    fontSize: 16,
   },
   inputContainer: {
     flexDirection: 'row',

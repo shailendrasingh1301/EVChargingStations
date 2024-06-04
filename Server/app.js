@@ -2,6 +2,7 @@ import express from 'express';
 import {Server} from 'socket.io';
 import {createServer} from 'http';
 import cors from 'cors';
+
 const port = 3000;
 
 const app = express();
@@ -15,26 +16,31 @@ const io = new Server(server, {
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
-app.use(cors);
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
+let connectedUsers = [];
+
 io.on('connection', socket => {
   console.log('User Connected', socket.id);
-  //   socket.emit('welcome', `Welcome to the server, ${socket.id}`); //this message will goes to the connected user only
-  //   socket.broadcast.emit('welcome', `${socket.id} joined the server`); //this message will goes to other connected user only not itself user
+  connectedUsers.push(socket.id);
+  io.emit('users-list', connectedUsers);
 
-  socket.on('message', ({message, room}) => {
-    console.log(message, room);
-    // io.emit('receive-message', data); //to all users
-    // socket.broadcast.emit('receive-message', data); //to other user not itself
-    io.to(room).emit('receive-message', {message, room}); //to particular room
+  socket.on('message', ({message, to}) => {
+    if (to) {
+      io.to(to).emit('receive-message', {message, from: socket.id});
+    } else {
+      io.emit('receive-message', {message, from: socket.id});
+    }
   });
 
   socket.on('disconnect', () => {
     console.log('User Disconnected', socket.id);
+    connectedUsers = connectedUsers.filter(id => id !== socket.id);
+    io.emit('users-list', connectedUsers);
   });
 });
 
