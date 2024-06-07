@@ -7,8 +7,22 @@ import {navigationRef} from './helper';
 import {StatusBar} from 'react-native';
 import Login from '../screens/Login/Login';
 import {useSelector} from 'react-redux';
+import Chat from '../screens/Chat/Chat';
+import ChatList from '../screens/Chat/ChatList';
 
 const Stack = createStackNavigator();
+
+export function ChatStackNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName={ROUTES.CHATLIST}>
+      <Stack.Screen name={ROUTES.CHATLIST} component={ChatList} />
+      <Stack.Screen name={ROUTES.CHAT} component={Chat} />
+    </Stack.Navigator>
+  );
+}
+
 function ApplicationNavigator() {
   const {accessToken} = useSelector(state => state.userReducer);
   return (

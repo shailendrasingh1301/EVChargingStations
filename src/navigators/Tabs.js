@@ -19,31 +19,13 @@ import Search from '../screens/Search/Search';
 import Favourite from '../screens/Favourite/Favourite';
 import Profile from '../screens/Profile/Profile';
 import {COLORS} from '../utils/colors';
-import Chat from '../screens/Chat/Chat';
+import ChatList from '../screens/Chat/ChatList';
+import {ChatStackNavigator} from './Application';
 
 const {width, height} = Dimensions.get('window'),
   TAB_BAR_WIDTH = width / 5;
 
 const Tab = createBottomTabNavigator();
-
-const styles = StyleSheet.create({
-  tabButton: {
-    flex: 1,
-  },
-  innerView: {
-    paddingVertical: Math.floor(height * 0.022),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconText: {
-    width: TAB_BAR_WIDTH,
-    textAlign: 'center',
-  },
-  iconSize: {
-    height: 24,
-    width: 24,
-  },
-});
 
 const getTabIcon = ({tabName, isFocused}) => {
   switch (tabName) {
@@ -53,7 +35,7 @@ const getTabIcon = ({tabName, isFocused}) => {
     case ROUTES.FAVOURITES: {
       return Images.FilledHeartIcon;
     }
-    case ROUTES.CHAT: {
+    case ROUTES.CHATSTACK: {
       return Images.MessageBoxIcon;
     }
     case ROUTES.PROFILE: {
@@ -63,6 +45,7 @@ const getTabIcon = ({tabName, isFocused}) => {
       return Images.HeartIcon;
   }
 };
+
 const TabBar = ({state, descriptors, navigation}) => {
   return (
     <View
@@ -163,8 +146,8 @@ const HomeTabsNavigator = () => {
           }}
         />
         <Tab.Screen
-          name={ROUTES.CHAT}
-          component={Chat}
+          name={ROUTES.CHATSTACK}
+          component={ChatStackNavigator}
           options={{
             tabBarLabel: 'Chat',
           }}
@@ -182,3 +165,22 @@ const HomeTabsNavigator = () => {
 };
 
 export default HomeTabsNavigator;
+
+const styles = StyleSheet.create({
+  tabButton: {
+    flex: 1,
+  },
+  innerView: {
+    paddingVertical: Math.floor(height * 0.022),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  iconText: {
+    width: TAB_BAR_WIDTH,
+    textAlign: 'center',
+  },
+  iconSize: {
+    height: 24,
+    width: 24,
+  },
+});

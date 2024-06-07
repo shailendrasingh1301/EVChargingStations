@@ -6,4 +6,5 @@ export const Images = {
   profileActiveIcon: require('./ProfileActiveIcon.png'),
   MessageBoxIcon: require('./messageBox.png'),
   MessageBoxTail: require('./tailWhite.png'),
+  BackButton: require('./backButton.png'),
 };
