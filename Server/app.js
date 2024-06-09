@@ -14,14 +14,6 @@ const io = new Server(server, {
   },
 });
 
-app.use(express.urlencoded({extended: true}));
-app.use(express.json());
-app.use(cors());
-
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
-
 let connectedUsers = [];
 let userGroups = {}; // To hold group information
 
@@ -35,12 +27,8 @@ io.on('connection', socket => {
 
   io.emit('users-list', {connectedUsers, userGroups});
 
-  socket.on('message', ({message, to}) => {
-    if (to) {
-      io.to(to).emit('receive-message', {message, from: socket.id});
-    } else {
-      socket.broadcast.emit('receive-message', {message, from: socket.id});
-    }
+  socket.on('message', ({message, room}) => {
+    socket.to(room).emit('receive-message', {message, room});
   });
 
   socket.on('join-room', room => {

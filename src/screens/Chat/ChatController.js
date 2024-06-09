@@ -3,13 +3,13 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {io} from 'socket.io-client';
 
 const useChatController = () => {
-  // const [message, setMessage] = useState('');
-  // const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [userRoomID, setUserRoomId] = useState('');
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
   const [roomName, setRoomName] = useState('');
+  const [socketID, setSocketId] = useState('');
+  const [users, setUsers] = useState([]);
   const [userGroups, setUserGroups] = useState({});
+  const [room, setRoom] = useState(null);
 
   const baseUrl =
     Platform.OS === 'android'
@@ -20,14 +20,14 @@ const useChatController = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
+      setSocketId(socket.id);
       console.log('connected', socket.id);
-      setUserRoomId(socket.id);
     });
 
-    // socket.on('receive-message', ({message, from}) => {
-    //   console.log('msg', message);
-    //   setMessages(prevMessages => [...prevMessages, {text: message, id: from}]);
-    // });
+    socket.on('receive-message', data => {
+      console.log('msg', data);
+      setMessages(prevMessages => [...prevMessages, data]);
+    });
 
     socket.on('users-list', ({connectedUsers, userGroups}) => {
       setUsers(connectedUsers.filter(user => user !== socket.id));
@@ -39,33 +39,29 @@ const useChatController = () => {
     };
   }, [socket]);
 
-  // const handleSend = () => {
-  //   if (message.trim()) {
-  //     socket.emit('message', {message, to: selectedUser});
-  //     setMessages(prevMessages => [
-  //       ...prevMessages,
-  //       {text: message, id: socket.id},
-  //     ]);
-  //     setMessage('');
-  //   }
-  // };
+  const handleSend = () => {
+    if (message.trim()) {
+      socket.emit('message', {message, room});
+      setMessage('');
+    }
+  };
   const joinRoomHandler = () => {
     socket.emit('join-room', roomName);
     setRoomName('');
   };
   return {
     socket,
-    // message,
-    // setMessage,
-    // messages,
-    // setMessages,
+    message,
+    setMessage,
+    messages,
+    setMessages,
     users,
     setUsers,
-    selectedUser,
-    setSelectedUser,
-    userRoomID,
-    setUserRoomId,
-    // handleSend,
+    room,
+    setRoom,
+    socketID,
+    setSocketId,
+    handleSend,
     roomName,
     setRoomName,
     joinRoomHandler,

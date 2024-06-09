@@ -20,28 +20,58 @@ const Chat = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
-  const {room, userRoomID, socket} = route.params;
+  const {room, socket, userGroups} = route.params;
+  // console.log('Room:', room, 'Socket ID:', socket.id);
 
   useEffect(() => {
-    socket.on('receive-message', ({message, from}) => {
-      setMessages(prevMessages => [...prevMessages, {text: message, id: from}]);
+    socket.on('receive-message', data => {
+      console.log('Message:', data);
+      setMessages(prevMessages => [...prevMessages, data]);
     });
-  }, [socket]);
+
+    return () => {
+      socket.off('receive-message');
+    };
+  }, []);
 
   const handleSend = () => {
     if (message.trim()) {
-      socket.emit('message', {message, to: room});
-      setMessages(prevMessages => [...prevMessages, {text: message, id: room}]);
+      socket.emit('message', {message, room});
+      // setMessages(prevMessages => [
+      //   ...prevMessages,
+      //   {message: message, room: socket.id},
+      // ]);
       setMessage('');
     }
   };
+
+  const [expandedGroups, setExpandedGroups] = useState({});
+
+  const toggleGroup = groupName => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [groupName]: !prev[groupName],
+    }));
+  };
+
   return (
     <SafeScreen>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigationRef.goBack()}>
           <Image source={Images.BackButton} />
         </TouchableOpacity>
-        <Text style={styles.headerText}>{room}</Text>
+        <TouchableOpacity onPress={() => toggleGroup(room)}>
+          <Text style={styles.headerText}>{room}</Text>
+        </TouchableOpacity>
+        {expandedGroups[room] && (
+          <View style={styles.userIdsContainer}>
+            {userGroups[room].map(userId => (
+              <Text key={userId} style={styles.userId}>
+                {userId}
+              </Text>
+            ))}
+          </View>
+        )}
       </View>
 
       <View style={styles.container}>
@@ -50,20 +80,21 @@ const Chat = () => {
           renderItem={({item}) => (
             <View
               style={{
-                flexDirection: item.id === userRoomID ? 'row' : 'row-reverse',
+                // flexDirection: item.room === room ? 'row' : 'row-reverse',
+                flexDirection: 'row',
                 marginBottom: 10,
               }}>
               <View
                 style={{
                   ...styles.messageContainer,
-                  backgroundColor:
-                    item.id === userRoomID
-                      ? COLORS.whiteShade
-                      : COLORS.lightGreen,
-                  borderTopRightRadius: item.id !== userRoomID ? 0 : 15,
-                  borderTopLeftRadius: item.id === userRoomID ? 0 : 15,
+                  backgroundColor: COLORS.lightGreen,
+                  // item.room !== socket.id
+                  //   ? COLORS.lightGreen
+                  //   : COLORS.whiteShade,
+                  // borderTopRightRadius: item.room === socket.id ? 0 : 15,
+                  borderTopLeftRadius: 15,
                 }}>
-                <Text style={styles.messageText}>{item.text}</Text>
+                <Text style={styles.messageText}>{item.message}</Text>
               </View>
             </View>
           )}
@@ -105,14 +136,6 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
   },
-  usersContainer: {
-    marginBottom: 20,
-  },
-  userItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-  },
   messageContainer: {
     padding: 10,
     borderRadius: 15,
@@ -138,22 +161,5 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginRight: 10,
-  },
-  groupsContainer: {
-    marginBottom: 20,
-  },
-  group: {
-    marginBottom: 10,
-  },
-  groupName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  userIdsContainer: {
-    paddingLeft: 20,
-    marginTop: 5,
-  },
-  userId: {
-    fontSize: 16,
   },
 });
