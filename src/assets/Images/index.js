@@ -7,4 +7,7 @@ export const Images = {
   MessageBoxIcon: require('./messageBox.png'),
   MessageBoxTail: require('./tailWhite.png'),
   BackButton: require('./backButton.png'),
+  BackgroundImage: require('./imageBackground.png'),
+  Logo: require('./logo.png'),
+  DriveIcon: require('./driveIcon.png'),
 };

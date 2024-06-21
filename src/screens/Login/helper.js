@@ -14,12 +14,8 @@ GoogleSignin.configure({
   scopes: [
     'email',
     'profile',
-    'https://www.googleapis.com/auth/user.phonenumbers.read',
-    'https://www.googleapis.com/auth/user.addresses.read',
-    'https://www.googleapis.com/auth/user.birthday.read',
-    'https://www.googleapis.com/auth/user.gender.read',
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/drive.readonly',
+    'https://www.googleapis.com/auth/drive',
   ],
   webClientId:
     '693243145991-gnmne5213mcsenu05kk7pkir34trbcue.apps.googleusercontent.com',
@@ -66,6 +62,26 @@ export const SocialLogin = {
           failure();
           break;
       }
+    }
+  },
+  // Google Sign-Out method
+  googleLogout: async (success, failure) => {
+    try {
+      // Sign out from Firebase
+      await auth().signOut();
+
+      // Sign out from Google
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+
+      // Navigate to the login screen or home screen after logout
+      navigationRef.navigate(ROUTES.LOGIN);
+
+      // Call the success callback
+      success();
+    } catch (error) {
+      // Handle logout errors and call the failure callback
+      failure(error);
     }
   },
 };
